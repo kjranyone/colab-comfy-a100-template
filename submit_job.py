@@ -3,13 +3,27 @@ import json
 
 BASE_URL = "https://cab-county-deferred-optional.trycloudflare.com"
 
-# 正真正銘の嫌儲板原住民・けんもうくん （ヽ´ん`） プロンプト
-KENMOU_PROMPT = (
-    "A melancholic, pale, round-headed minimalist 2ch AA character Kenmou-kun `( ´ん\\` )`, "
-    "having faint dark stubble, droopy resigned eyes, slouching in a dimly lit messy Japanese 4.5-tatami room. "
-    "Suddenly glowing light from his old monitor displays 'Google Colab A100 GPU Video Generation Successful!'. "
-    "His tired eyes tear up in deep, overwhelming emotion, muttering softly with trembling lips. "
-    "Poignant cinematic anime lighting, rain hitting the window outside, 24fps atmospheric masterpiece animation."
+# MiniMax-H3 公式プロンプティングガイド準拠:
+# 1. タイムコード別ショットリスト [0-2s] [2-4s] [4-5s]
+# 2. カメラワークとレンズ演出 (Cinematic push-in, shallow depth of field)
+# 3. キャラクター造形の厳密な固定 (Preserve features)
+# 4. ネイティブステレオ音響の演出 (Audio direction: room tone, rain, soft sigh)
+# 5. 明確な除外制約 (State what not to show)
+KENMOU_PROMPT_FAL_SPEC = (
+    "A 5-second 16:9 cinematic anime short of Kenmou-kun `( ´ん\\` )`. "
+    "Preserve character identity: completely round, bald pale white head, droopy resigned eyes with heavy dark bags, "
+    "sparse faint stubble along the jawline, slouching posture in a worn gray long-sleeve shirt. "
+    "Setting: a dimly lit Japanese 4.5-tatami apartment room at night. An old CRT monitor on a low table, "
+    "an open can of cheap beer, messy futon in the corner, and heavy rain tapping against the window pane. "
+    "[0 to 2 seconds] Medium-close shot. Kenmou-kun sits hunched over the low table, staring lifelessly at the 2ch poverty board text on the screen. "
+    "Soft green phosphor reflections illuminate his pale face. "
+    "[2 to 4 seconds] Smooth dramatic push-in to a close-up of his face. The screen suddenly flashes with warm golden light showing: 'A100 GPU Video Generation Successful!'. "
+    "His tired eyes widen subtly and fill with glistening tears. His lip quivers as he breathes out in quiet disbelief. "
+    "[4 to 5 seconds] A tear rolls down his pale cheek. He lets out a faint, trembling whisper. "
+    "Audio: gentle rain hitting the window, low electrical 60Hz hum of the old CRT monitor, clothing friction as he shifts, "
+    "and a quiet, emotional sigh with soft piano chords rising delicately. "
+    "Visual style: retro 1990s Japanese cel anime look, 35mm film grain, subdued desaturated color palette with warm monitor light, 24fps. "
+    "Do not show handsome bishonen features, sharp hair, glossy modern 3D CGI, jump scares, or bright cartoon expressions."
 )
 
 prompt_data = {
@@ -58,17 +72,17 @@ prompt_data = {
         "inputs": {
             "clip": ["2", 0],
             "vae": ["3", 0],
-            "prompt": KENMOU_PROMPT,
+            "prompt": KENMOU_PROMPT_FAL_SPEC,
             "width": 1344,
             "height": 768,
             "length": 124
         }
     },
-    # 7. Negative Conditioning
+    # 7. Negative Conditioning (Prompt Guide Rule 4: State what you do not want)
     "7": {
         "class_type": "CLIPTextEncode",
         "inputs": {
-            "text": "handsome bishonen, western cartoon, high saturation glossy modern anime, 3d cgi render, blurry, distorted face, watermark",
+            "text": "handsome bishonen, spiky anime hair, western 3D cartoon, glossy modern CGI render, saturated cheerful colors, blurry, distorted anatomy, fast jump cuts, watermark",
             "clip": ["2", 0]
         }
     },
@@ -88,7 +102,7 @@ prompt_data = {
             "denoise": 1.0
         }
     },
-    # 9. VAEDecode (Latent -> Frames)
+    # 9. VAEDecode (Latent -> Video Frames)
     "9": {
         "class_type": "VAEDecode",
         "inputs": {
@@ -96,7 +110,7 @@ prompt_data = {
             "vae": ["3", 0]
         }
     },
-    # 10. CreateVideo (Images -> Video Stream at 24fps)
+    # 10. CreateVideo (Frames -> Video Stream at 24fps)
     "10": {
         "class_type": "CreateVideo",
         "inputs": {
@@ -109,7 +123,7 @@ prompt_data = {
         "class_type": "SaveVideo",
         "inputs": {
             "video": ["10", 0],
-            "filename_prefix": "kenmou_true_aa_a100",
+            "filename_prefix": "kenmou_official_h3_spec",
             "format": "mp4"
         }
     }
@@ -122,7 +136,7 @@ def queue():
         with urllib.request.urlopen(req, timeout=15) as res:
             res_json = json.loads(res.read().decode())
             prompt_id = res_json.get("prompt_id")
-            print(f"[SUCCESS] Authentic Kenmou-kun MP4 job queued on Colab A100! Prompt ID: {prompt_id}")
+            print(f"[SUCCESS] Fal-spec MiniMax-H3 MP4 job queued on Colab A100! Prompt ID: {prompt_id}")
     except urllib.error.HTTPError as e:
         print("HTTP Error:", e.code, e.read().decode())
     except Exception as e:
