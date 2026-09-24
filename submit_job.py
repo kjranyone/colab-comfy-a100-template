@@ -1,9 +1,16 @@
 import urllib.request
 import json
-import time
-import os
 
 BASE_URL = "https://cab-county-deferred-optional.trycloudflare.com"
+
+# 正真正銘の嫌儲板原住民・けんもうくん （ヽ´ん`） プロンプト
+KENMOU_PROMPT = (
+    "A melancholic, pale, round-headed minimalist 2ch AA character Kenmou-kun `( ´ん\\` )`, "
+    "having faint dark stubble, droopy resigned eyes, slouching in a dimly lit messy Japanese 4.5-tatami room. "
+    "Suddenly glowing light from his old monitor displays 'Google Colab A100 GPU Video Generation Successful!'. "
+    "His tired eyes tear up in deep, overwhelming emotion, muttering softly with trembling lips. "
+    "Poignant cinematic anime lighting, rain hitting the window outside, 24fps atmospheric masterpiece animation."
+)
 
 prompt_data = {
     # 1. UNET Loader (MiniMax-H3)
@@ -51,7 +58,7 @@ prompt_data = {
         "inputs": {
             "clip": ["2", 0],
             "vae": ["3", 0],
-            "prompt": "Kenmou-kun anime character crying comical tears of joy and shouting passionately: Google Colab can generate video on A100 GPU! Glowing laptop showing 100% GPU charts, dramatic camera zoom in, dynamic Japanese anime style, high production quality.",
+            "prompt": KENMOU_PROMPT,
             "width": 1344,
             "height": 768,
             "length": 124
@@ -61,7 +68,7 @@ prompt_data = {
     "7": {
         "class_type": "CLIPTextEncode",
         "inputs": {
-            "text": "blurry, low quality, distorted face, bad anatomy, static, watermark",
+            "text": "handsome bishonen, western cartoon, high saturation glossy modern anime, 3d cgi render, blurry, distorted face, watermark",
             "clip": ["2", 0]
         }
     },
@@ -73,7 +80,7 @@ prompt_data = {
             "positive": ["6", 0],
             "negative": ["7", 0],
             "latent_image": ["6", 1],
-            "seed": 42,
+            "seed": 20260924,
             "steps": 25,
             "cfg": 6.0,
             "sampler_name": "euler",
@@ -81,7 +88,7 @@ prompt_data = {
             "denoise": 1.0
         }
     },
-    # 9. VAEDecode
+    # 9. VAEDecode (Latent -> Frames)
     "9": {
         "class_type": "VAEDecode",
         "inputs": {
@@ -89,29 +96,37 @@ prompt_data = {
             "vae": ["3", 0]
         }
     },
-    # 10. SaveAnimatedWEBP
+    # 10. CreateVideo (Images -> Video Stream at 24fps)
     "10": {
-        "class_type": "SaveAnimatedWEBP",
+        "class_type": "CreateVideo",
         "inputs": {
             "images": ["9", 0],
-            "filename_prefix": "kenmou_minimax_a100",
-            "fps": 24.0,
-            "lossless": False,
-            "quality": 90,
-            "method": "default"
+            "fps": 24.0
+        }
+    },
+    # 11. SaveVideo (Output strictly to MP4)
+    "11": {
+        "class_type": "SaveVideo",
+        "inputs": {
+            "video": ["10", 0],
+            "filename_prefix": "kenmou_true_aa_a100",
+            "format": "mp4"
         }
     }
 }
 
-data = json.dumps({"prompt": prompt_data, "client_id": "agent_kenmou"}).encode("utf-8")
-req = urllib.request.Request(f"{BASE_URL}/prompt", data=data, headers={"Content-Type": "application/json"})
+def queue():
+    data = json.dumps({"prompt": prompt_data, "client_id": "agent_kenmou"}).encode("utf-8")
+    req = urllib.request.Request(f"{BASE_URL}/prompt", data=data, headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as res:
+            res_json = json.loads(res.read().decode())
+            prompt_id = res_json.get("prompt_id")
+            print(f"[SUCCESS] Authentic Kenmou-kun MP4 job queued on Colab A100! Prompt ID: {prompt_id}")
+    except urllib.error.HTTPError as e:
+        print("HTTP Error:", e.code, e.read().decode())
+    except Exception as e:
+        print("Error:", e)
 
-try:
-    with urllib.request.urlopen(req, timeout=15) as res:
-        res_json = json.loads(res.read().decode())
-        prompt_id = res_json.get("prompt_id")
-        print(f"[SUCCESS] Job successfully queued on Colab A100! Prompt ID: {prompt_id}")
-except urllib.error.HTTPError as e:
-    print("HTTP Error:", e.code, e.read().decode())
-except Exception as e:
-    print("Error:", e)
+if __name__ == "__main__":
+    queue()
