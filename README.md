@@ -18,9 +18,9 @@ Google One AI Premium / Google AI Pro 等のプランで付与される月間 20
 - **Cloudflare Tunnel による無料・即時 WebUI 接続**
   - ngrok のトークン取得等の煩わしい初期設定が不要。
   - 実行すると `trycloudflare.com` のセキュアな一時 URL が自動発行され、ブラウザからワンクリックで ComfyUI に接続可能。
-- **Google Drive 永続キャッシュ対応**
-  - 初回ダウンロードしたモデル（約20GB）を Google Drive（`MyDrive/ComfyUI_Models/`）に自動保存。
-  - 2回目以降のセッションではダウンロードが自動スキップされ、**起動待ち時間が 0 秒** に短縮されます。
+- **Google Drive 完全永続化 (モデルキャッシュ & 出力動画)**
+  - 初回ダウンロードしたモデル（約20GB）を `MyDrive/ComfyUI_Models/` に自動キャッシュ（2回目以降の待ち時間 0 秒）。
+  - 生成された動画・画像は **`MyDrive/ComfyUI_Outputs/` にリアルタイムで自動保存**。Colab インスタンスが切断・終了しても成果物が消えません。
 - **モデル自動ダウンロード**
   - Hugging Face (`Comfy-Org/MiniMax-H3`) から推奨される量子化/高効率モデル (`int8_convrot`) を自動ダウンロード。
 
