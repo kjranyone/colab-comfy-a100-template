@@ -10,6 +10,12 @@ Google One AI Premium / Google AI Pro 等のプランで付与される月間 20
 > 📖 **詳細な解説・検証記事 (Zenn)**:  
 > [Google AI Pro(2,900円)に課金するとA100 40GBがColab経由で毎月37時間分使える話](https://zenn.dev/grand2/articles/ddba80ba400f6f)
 
+<p align="center">
+  <img src="kenmou_true.webp" alt="Kenmou-kun celebrating A100 video generation" width="600" />
+  <br>
+  <em>( ´ん` )「Google AI Proの無料CU枠でA100動いて動画生成できたあああああ！」</em>
+</p>
+
 ---
 
 ## 🌟 主な特徴
