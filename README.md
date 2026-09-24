@@ -69,6 +69,41 @@ Google Colab の動的リソース消費レート（実測値・目安）は以�
 
 ---
 
+## 🤖 エージェント統合・API 呼び出し (Headless / API Bridge)
+
+「ユーザーが Colab の画面を手動で操作しなくても、AI エージェントがこのリポジトリを読んで自動で動画生成を行える」構成をサポートしています。
+
+### 1. Python SDK / Client 経由でエージェントから呼ぶ ([`client.py`](file:///C:/lib/github/kjranyone/colab-comfy-a100-template/client.py))
+Colab で起動した Cloudflare Tunnel URL を渡すだけで、エージェントがプログラムから MiniMax-H3 を呼び出し、動画の生成待機と URL 取得までを自動化できます。
+
+```python
+from client import ComfyUIColabClient, create_minimax_t2v_prompt
+
+# Tunnel URL を指定
+client = ComfyUIColabClient(base_url="https://xxxx.trycloudflare.com")
+
+# プロンプト定義
+prompt = create_minimax_t2v_prompt(
+    positive_prompt="Cyberpunk robot walking in rain, cinematic lighting, 4k",
+    frames=121
+)
+
+# ジョブの投入と完了待ち
+prompt_id = client.queue_prompt(prompt)
+outputs = client.wait_for_completion(prompt_id)
+print("Generated video:", outputs)
+```
+
+### 2. ブラウザ自動化（Browser Agent）による完全自律起動
+Playwright などのブラウザエージェントを用いることで、Colab の立ち上げからトンネル URL の抽出までを完全無人化できます：
+1. エージェントが Colab URL（[Open In Colab](https://colab.research.google.com/github/kjranyone/colab-comfy-a100-template/blob/main/colab_comfy_minimax_h3_a100.ipynb)）にブラウザでアクセス。
+2. ランタイムタイプを「A100 GPU」に切り替えて「すべてのセルを実行」。
+3. Step 4 の出力から `trycloudflare.com` URL を抽出し、以降は API で自律制御。
+
+※ 詳細は [skills/colab-comfy-agent/SKILL.md](file:///C:/lib/github/kjranyone/colab-comfy-a100-template/skills/colab-comfy-agent/SKILL.md) を参照してください。
+
+---
+
 ## 📜 ライセンス・利用規約
 - MiniMax-H3 モデルは [MiniMax H3 Community License](https://huggingface.co/Comfy-Org/MiniMax-H3) に従います。
 - ComfyUI は [GPL-3.0 License](https://github.com/comfyanonymous/ComfyUI/blob/master/LICENSE) です。
