@@ -1,0 +1,3 @@
+# Ignore local draft articles
+zenn_article_*.md
+*.draft.md
