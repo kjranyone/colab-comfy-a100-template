@@ -5,6 +5,10 @@ Google Colab 上で **A100 GPU (40GB VRAM)** を利用し、**ComfyUI 最新版*
 Google One AI Premium / Google AI Pro 等のプランで付与される月間 200 Compute Units (CU) のリソース枠を活用し、誰でもコスト効率良く高品質な動画生成を試すことができます。
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kjranyone/colab-comfy-a100-template/blob/main/colab_comfy_minimax_h3_a100.ipynb)
+[![Zenn Article](https://img.shields.io/badge/Zenn-%E8%A7%A3%E8%AA%AC%E8%A8%98%E4%BA%8B%E3%81%AF%E3%81%93%E3%81%A1%E3%82%89-blue?logo=zenn)](https://zenn.dev/grand2/articles/ddba80ba400f6f)
+
+> 📖 **詳細な解説・検証記事 (Zenn)**:  
+> [Google AI Pro(2,900円)に課金するとA100 40GBがColab経由で毎月37時間分使える話](https://zenn.dev/grand2/articles/ddba80ba400f6f)
 
 ---
 
