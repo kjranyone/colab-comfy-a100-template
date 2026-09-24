@@ -21,6 +21,11 @@ Google One AI Premium / Google AI Pro 等のプランで付与される月間 20
 - **Google Drive 完全永続化 (モデルキャッシュ & 出力動画)**
   - 初回ダウンロードしたモデル（約20GB）を `MyDrive/ComfyUI_Models/` に自動キャッシュ（2回目以降の待ち時間 0 秒）。
   - 生成された動画・画像は **`MyDrive/ComfyUI_Outputs/` にリアルタイムで自動保存**。Colab インスタンスが切断・終了しても成果物が消えません。
+- **最新高速化スタック対応（オプション選択式）**
+  - **SageAttention**、**TeaCache**（反復ステップ計算のキャッシュ省略）、**Sol-Attn**（スパースアテンション）をノートブックのチェックボックス1つで導入可能。
+  - 通常 25〜30分かかる 124フレーム生成を **大幅に高速化（30〜50%短縮）**。
+- **CUDA 12.8 / 13.0 互換対応**
+  - Colab の最新ドライバ（CUDA 13.0 表示）と PyTorch cu128 の警告を整理し、Triton / SageAttention カーネルを安定動作。
 - **モデル自動ダウンロード**
   - Hugging Face (`Comfy-Org/MiniMax-H3`) から推奨される量子化/高効率モデル (`int8_convrot`) を自動ダウンロード。
 
