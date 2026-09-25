@@ -28,9 +28,11 @@ Google One AI Premium / Google AI Pro 等のプランで付与される月間 20
 - **Cloudflare Tunnel による無料・即時 WebUI 接続**
   - ngrok のトークン取得等の煩わしい初期設定が不要。
   - 実行すると `trycloudflare.com` のセキュアな一時 URL が自動発行され、ブラウザからワンクリックで ComfyUI に接続可能。
-- **Google Drive 完全永続化 (モデルキャッシュ & 出力動画)**
-  - 初回ダウンロードしたモデル（約20GB）を `MyDrive/ComfyUI_Models/` に自動キャッシュ（2回目以降の待ち時間 0 秒）。
-  - 生成された動画・画像は **`MyDrive/ComfyUI_Outputs/` にリアルタイムで自動保存**。Colab インスタンスが切断・終了しても成果物が消えません。
+- **Google Drive 完全永続化 & ローカル高速 SSD 最適化**
+  - ComfyUI の `models/` ディレクトリは Colab の高速ローカル SSD 上に直接配置し、Google Drive FUSE 経由での UI/スプラッシュ画面のフリーズを完全解消。
+  - 初回ダウンロードしたモデル（約20GB）は `MyDrive/ComfyUI_Models/` に自動キャッシュ保存され、次回以降はローカル SSD へ高速コピー (`rsync`)。
+  - 生成された動画・画像は **`MyDrive/ComfyUI_Outputs/` に自動保存**。Colab インスタンスが切断・終了しても成果物が消えません。
+  - 入力素材は **`MyDrive/ComfyUI_Inputs/` から起動時にローカル SSD へコピー**（WebUI からアップロードした素材は Drive に保存されないため、残したい素材は Drive 側に配置）。Drive 連携（モデルキャッシュ・出力保存・入力読み込み）は `USE_GOOGLE_DRIVE` 1つで ON/OFF できます。
 - **🚀 Turbo LoRA 最適化スタック（本命・推奨）**
   - **`lightx2v/Minimax-h3-Turbo` (8-Step 蒸留)** を自動ダウンロード。
   - 通常 25 ステップ（約 30 分）かかる動画生成を、**わずか 6〜8 ステップ（約 6〜8 分・所要時間 1/4）** で完了。月間 200 CU 枠での大量検証が可能に。
